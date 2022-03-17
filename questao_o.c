@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <conio.h>
 
 //{ longint momento, int duracao, int operacao, int status }
 void main() {
@@ -35,6 +36,20 @@ void main() {
     //printf("\nnumero de linhas: %d \n", lci + 1);
     int i = 0;
 
+    int status_0[23];
+    int status_1[23];
+    int status_2[23];
+    int status_3[23];
+
+    int h = 0;
+    while (h < 23) {
+        status_0[h] = 0;
+        status_1[h] = 0;
+        status_2[h] = 0;
+        status_3[h] = 0;
+        h = h+1;
+    }
+
     int numero_carregamentos_materia_prima_tipo_1 = 0;
     while (i <= lci) {
         int j = 0;
@@ -58,7 +73,7 @@ void main() {
                 } else if (stage == 1) {
                     virgula2 == j;
                     operacao = lines_char[i][j+1]; // imediatamente apos a segunda virgula encontra-se a operacao
-                } else if (stage == 3) {
+                } else if (stage == 2) {
                     virgula3 = j;
                     status = lines_char[i][j+1]; // // imediatamente apos a segunda virgula encontra-se o status
                 }
@@ -94,12 +109,57 @@ void main() {
             //printf("carregamento contabilizado! - %d", numero_carregamentos_materia_prima_tipo_1);
         }
 
+
+         if (status == '0') {
+            status_0[hora] = status_0[hora]+1;
+        } else if (status == '1') {
+            status_1[hora] = status_1[hora]+1;
+        } else if (status == '2') {
+            status_2[hora] = status_2[hora]+1;
+        } else if (status == '3') {
+            status_3[hora] = status_3[hora]+1;
+        }
+
         i = i+1;
     }
+    //int y = status_1[11];
+    //printf("status hora %d ", y);
 
-    printf("\nNumero de carregamentos com materia prima do tipo 1 carregada de manha: %d", numero_carregamentos_materia_prima_tipo_1);
 
     fclose(fp);
+
+    FILE *arq;
+    int result;
+    char Str[50];
+
+    arq = fopen("saida.txt", "a");
+
+    if (arq == NULL)
+    {
+        printf("\nProblemas na CRIACAO do arquivo de saida\n");
+        return;
+    }
+
+    //strcpy(Str,"Linha de teste1");
+    //result = fputs(Str, arq);
+
+
+    int g = 0;
+    while (g<=23) {
+        result = fprintf(arq,"%d,%d,%d\n",g,0, status_0[g]);
+        result = fprintf(arq,"%d,%d,%d\n",g,1, status_1[g]);
+        result = fprintf(arq,"%d,%d,%d\n",g,2, status_2[g]);
+        result = fprintf(arq,"%d,%d,%d\n",g,3, status_3[g]);
+
+        if (result == EOF) {
+            printf("\nErro na Gravacao\n");
+        }
+
+        g = g+1;
+    }
+
+
+    fclose(arq);
 
     return 0;
 }
